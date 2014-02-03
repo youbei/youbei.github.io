@@ -1,0 +1,232 @@
+/* reset */
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td {
+    background: none repeat scroll 0 0 transparent;
+    border: 0 none;
+    margin: 0;
+    outline: 0 none;
+    padding: 0;
+    vertical-align: baseline;
+	list-style: none;
+	font-weight: normal;
+}
+
+/* selection */
+::selection {
+	background: #111;
+	color: #fdfdfd;
+}
+::-moz-selection {
+	background: #111;
+	color: #fdfdfd;
+}
+
+a {
+	text-decoration: none;
+	color: #111;
+}
+a:hover {
+	text-decoration: underline;
+	color: #cc0000;
+}
+
+
+/* le body */
+body {
+	font-size: 100%;
+	background-color: #fdfdfd;
+	color: #111;
+	font-family: "Helvetica Neue", Helvetica, Arial, \5B8B\4F53, \534E\6587\5B8B\4F53  sans-serif;
+}
+hr.style-one {
+	padding: 0;
+	margin: 0;
+	border: 0; 
+	height: 0; 
+	border-top: 1px solid rgba(0, 0, 0, 0.1); 
+	border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+}
+/* 0.0625em = 1px */
+hr.style-two {
+	padding: 0;
+	margin: 0.25em 0 0 0;
+	border: 0; 
+	height: 0; 
+	border-top: 1px solid rgba(0, 0, 0, 0.1); 
+	border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+}
+/* 0.0625em = 1px */
+
+/* 56.25em = 900px */
+.container{
+	border-top: 0.25em solid #111;
+	border-bottom: 0.25em solid #111;
+	margin: 0 auto;
+	max-width: 600px;
+	width: 80%;
+}
+/* le site title */
+.sitetitle {
+	padding: 1.25em 0 0 0; 
+	height: 3.05em; 
+}
+
+.sitetitle .left {
+	float: left;
+}
+.sitetitle .left .logo {
+	font-size: 4.5rem;
+	padding-top: 1rem;
+	line-height: 0.1rem;
+	/*
+	height: 3.5em;
+	background: url("image/logo.png") no-repeat scroll bottom right transparent;
+	*/
+	position: relative;
+	display: inline-block;
+}
+.sitetitle .left .logo a{
+	font-weight: 500;
+}
+.sitetitle .left .logo a:hover{
+	text-decoration: underline;
+}
+
+.sitetitle .right {
+	float: right;
+}
+.sitetitle .right ul {
+
+}
+.sitetitle .right ul li {
+	position: relative;
+	float: right;
+	text-align: right;
+	color: #111;
+	padding: 1.8em 0 0 0;
+}
+.sitetitle .right ul li a {
+	font-size: 1em;
+	font-weight: 400;
+	/*
+	border-right: 0.125em solid #e5e5e5;
+	*/
+	transition: color 0.1s linear 0s;
+	display: block;
+}
+.sitetitle .right ul li a span {
+	padding: 0 0.5em;
+}
+.sitetitle .right ul:hover li a {
+	transition: color 0.1s linear 0s;
+	color: #e5e5e5;
+}
+.sitetitle .right ul li:hover a {
+	transition: color 0.1s linear 0s;
+	/*
+	border-right: 0.125em solid #111;
+	*/
+	text-decoration: none;
+	color: #111;
+}
+
+
+/* for post */
+.pagetitle {
+	font-family: "Old Standard TT", Georgia, \5B8B\4F53, \534E\6587\5B8B\4F53, serif;
+	letter-spacing: 1px;
+	text-align: center;
+	padding: 1.375em 0 0 0;
+	font-size: 30px;	
+	font-weight: normal;
+	color: #111;
+	font-style: italic;
+}
+.dash {
+	background: #111;
+	height: 2px;
+	margin: 10px auto;
+	position: relative;
+	width: 5%;
+}
+.pagedate {
+	font-size: 14px;
+	letter-spacing: 3px;
+	text-align: center;
+	/*
+	font-family: Helvetica, Arial, sans-serif;
+	*/
+}
+.pagecontent {
+	padding-top: 30px;
+	margin: auto;
+	width: 100%;
+	color: #111;
+}
+.pagecontent p {
+	font-size: 1em;
+	font-family: Georgia, \5B8B\4F53, \534E\6587\5B8B\4F53, serif;
+	letter-spacing: 0.0625em;
+	line-height: 1.5em;
+	padding: 0.625em 0 0.625em 0; 
+}
+.pagecontent p img {
+	width: 100%;
+	height: auto;
+	box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.15);
+}
+.pagecontent .video {
+	position: relative;
+	padding-bottom: 56.25%;
+	height: 0;
+	margin: 0.625em 0 0 0 0;
+}
+.pagecontent .video iframe,
+.pagecontent .video object,
+.pagecontent .video embed
+{
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
+/* due to the limitation of markdown, use h3 as image captoin */
+.pagecontent h3 {
+	font-family: Georgia, \5B8B\4F53, \534E\6587\5B8B\4F53, serif;
+	font-size: 0.9em;
+	margin-top: -1.25em;
+	color: #888;
+	padding: 0 0 0.625em 0;
+}
+.pagecontent .seperator {
+}
+.pagecontent .seperator img{
+	width: 60px;
+	height: auto;
+	padding: 3.125em 0 3.125em 0;
+	margin: auto;
+	display: block;
+}
+/* for page */
+
+.footer {
+	width: 170px;
+	border-top: 1px solid #111;
+	font-family: "Old Standard TT", Georgia, serif;
+	font-size: 1em;	
+	margin-top: 50px;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 10px 0 20px 0;
+}
+.footer .dash {
+	background: #111;
+	height: 2px;
+	margin: 10px auto;
+	position: relative;
+	width: 5%;
+}
+.footer p {
+	text-align: center;
+}

@@ -1,0 +1,108 @@
+/* reset */
+html, body, h1, h2, h3, p{
+	padding: 0;
+	margin: 0;
+	font-weight: normal;
+	height: 100%;
+}
+body {
+}
+.left {
+	width: 38.2%;
+	height: 100%;
+	background: #fff;
+	float: left;
+}
+.left .content {
+	padding-top: 12em;	
+}
+.circle_black {
+	margin: auto;
+	display: block;
+	background: #000;
+	width: 10em;
+	height: 10em;
+	border-radius: 5em;
+}
+.left .content a {
+}
+.triangle_style {
+	color: #111;
+	margin: auto;
+	width: 1em;
+	padding: 0.5em 0 0 0;
+}
+.triangle {
+	width: 0;
+	height: 0;
+	border-bottom: solid 1em #000;
+	border-left: solid 0.6em transparent;
+	border-right: solid 0.6em transparent;
+}
+.triangle_back {
+	width: 0;
+	height: 0;
+	position: relative;
+	border-right: solid 1em #000;
+	border-bottom: solid 0.6em transparent;
+	border-top: solid 0.6em transparent;
+}
+.triangle_back:hover {
+	width: 0;
+	height: 0;
+	position: relative;
+	border-right: solid 1em #9e2f28;
+	border-bottom: solid 0.6em transparent;
+	border-top: solid 0.6em transparent;
+}
+/*
+.triangle_back:before {
+	content: "";
+	width: 0;
+	height: 0;
+	position: absolute;
+	top: -0.45em;
+	left: 0.12em;
+	border-right: solid 0.83em #fff;
+	border-bottom: solid 0.45em transparent;
+	border-top: solid 0.45em transparent;
+}
+*/
+
+.info {
+	display: block;
+	text-align: right;
+	float: right;
+	padding: 12em 0 0 0;
+}
+.info h1 {
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 1.6em;
+	color: #000;
+	margin: 0 0.2em;
+}
+.info p {
+	font-family: Georgia, serif;
+	font-size: 1em;
+	color: #000;
+	margin: 0 0.3em;
+	font-style: italic;
+}
+
+.right {
+	width: 61.8%;
+	height: 100%;
+	background: #000;
+	float: right;
+}
+.right .content {
+	padding-top: 12em;	
+}
+.circle_white {
+	margin: auto;
+	display: block;
+	background: #fff;
+	width: 10em;
+	height: 10em;
+	border-radius: 5em;
+}

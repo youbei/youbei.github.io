@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1 ">
+    <meta charset="utf-8">
+    <title>{{ page.title }}</title>
+    {% if page.description %}<meta name="description" content="{{ page.description }}">{% endif %}
+    <meta name="author" content="{{ site.author.name }}">
+
+    <!-- Le styles -->
+	<link href='http://fonts.googleapis.com/css?family=Old+Standard+TT:400,400italic' rel='stylesheet' type='text/css'>
+
+	<link rel="stylesheet" type="text/css"
+	      media="only screen and (min-width: 1024px)"
+		  href="/assets/post.css" />
+
+	<link rel="stylesheet" type="text/css"
+	      media="only screen and (max-width: 1023px) and (min-width: 800px)"
+		  href="/assets/post.css" />
+
+	<link rel="stylesheet" type="text/css"
+	      media="only screen and (max-width: 799px)"
+		  href="/assets/post_mobile.css" />
+
+
+	<!-- le scripts -->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/assets/image/favicon.ico">
+	</head>
+
+	<body>
+	<div class="container">
+		<div class="sitetitle">
+			<div class="left">
+				<div class="logo">
+					<a href="/">
+						Y</a>
+				</div>
+			</div>
+	<!-- Pagination links -->
+		<div class ="right">
+        {% if page.previous.url and page.next.url %}
+		<ul>
+			<li><a href="{{page.previous.url}}" title="{{page.previous.title}}">Older</a></li>
+			<li><a href="{{page.next.url}}" title="{{page.next.title}}">Newer<span>/</span></a></li>
+		</ul>
+		{% elsif page.previous.url %}
+		<ul>
+			<li><a href="{{page.previous.url}}" title="{{page.previous.title}}">Older</a></li>
+			<li><a href="/">Home<span>/</span></a></li> 
+		</ul>
+        {% elsif page.next.url %}
+		<ul>
+			<li><a href="/">Home</a></li> 
+			<li><a href="{{page.next.url}}" title="{{page.next.title}}">Newer<span>/</span></a></li>
+		</ul>
+        {% endif %}
+	    </div>
+        </div>
+			<hr class="style-two">
+			<div class="pagetitle">	
+				{{ page.title }}
+			</div>
+			<div class="dash"></div>
+			<div class="pagedate">
+				{{ page.date | date_to_long_string }}
+			</div>
+
+			<div class="pagecontent">
+				{% if page.video_url %}
+				<div align="center">
+					<div class="video">
+					  <iframe   
+						src="{{ page.video_url }}?&amp;title=0&amp;byline=0&amp;portrait=0" 
+						frameborder="0" 
+						allowfullscreen="true"
+						></iframe>
+					</div>
+				</div>
+				{% endif %}
+				{{ content }}
+
+
+				<div class="seperator">
+					<img src="/assets/image/y.png">
+				</div>
+			</div>
+		<hr class="style-one" /> 
+	<div class="footer">
+		<p>Designed by {{ site.author.name }}</p>
+		<div class="dash"></div>
+		<p>Powered by <a href="https://github.com"  target="_blank">GitHub</a></p>
+	</div> <!-- class="footer" -->
+
+</div><!-- class="container" -->
+
+	
+</body>
+</html>
+

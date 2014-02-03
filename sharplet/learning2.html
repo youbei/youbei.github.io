@@ -1,0 +1,387 @@
+<!doctype html>
+<html>
+<head>
+    <title>Video Study Mode</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" type="text/css" rel="stylesheet">
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" type="text/css" href="video.css" />
+</head>
+<body>
+    <header class="navbar navbar-inverse navbar-fixed-top bs-docs-nav" role="banner">
+        <div class="container">
+            <p class="navbar-brand">Video Study Mode</p>
+        </div>
+    </header>
+    <div class="container">
+        <div class="row">
+			<div class="col-xs-10 col-sm-8 col-md-8 col-md-offset-2 col-sm-offset-2">
+                <!--p>Current Time: <span id="videoCurrentTime">--:--</span> | Duration: <span id="videoDuration">--:--</span></p-->
+                <div id="questions"></div>
+                <!--p><a href="javascript:void(0);" onclick="playFromStart();">Play From Start</a></p-->
+                <div id="answers"></div>
+
+                <p class="text-center"><a href="javascript:void(0);" onclick="playVideo();">Play</a> | <a href="javascript:void(0);" onclick="pauseVideo();">Pause</a> | <a href="javascript:void(0);" onclick="stopVideo();">Stop</a> | <a href="javascript:void(0);" onclick="muteVideo();">Mute</a> | <a href="javascript:void(0);" onclick="unMuteVideo();">Unmute</a> | <a onclick="pre()" href="#">Previous Question | <a onclick="next()" href="#">Next Question</a></a></p>
+                <div class="videoBox2">
+                    <div id="videoDiv"></div>
+                </div>
+                <div class="videoBox3">
+                    <div id="videoDiv2"></div>
+                </div>
+            </div>
+        </div><!--row-->
+
+        
+        <!--p><a onclick="reviewLater()">Review Later</a></p>
+        <p><a onclick="showMyClips()">Show My Clips</a></p>
+        <div id="myClips"></div-->
+        </div><!--container-->
+
+
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+	<script src="https://apis.google.com/js/client.js?onload=onClientLoad" type="text/javascript"></script>
+    <script src="http://www.google.com/jsapi" type="text/javascript"></script>
+    <script type="text/javascript">
+      google.load("swfobject", "2.1");
+    </script>    
+    
+    <script type="text/javascript">
+        state = -1;
+        state2 = -1;
+        clipNo = -1;
+        clipPlaying = -1;
+        myClipNo = 0;
+        myVideoData = new Object();
+        function reviewLater() {
+            var videoData = JSON.parse(localStorage["data"]);
+            var last = Object.keys(videoData).sort().reverse()[0];
+            var current = ytplayer.getCurrentTime();
+            var hasProp = 0;
+            // so lame...
+            if ( (current > videoData[0].videoStart) && ( current < videoData[last].videoStart )) {
+                for (var i in videoData) {
+                    if (current - videoData[i].videoStart < 0) {
+                        if (myVideoData[0] != null) {
+                            for (var j in myVideoData) {
+                                if (myVideoData[j].videoStart == videoData[i-1].videoStart) {
+                                    hasProp = 1;
+                                }
+                            }
+                            if ( hasProp == 0) {
+                                console.log("the second time");
+                                myVideoData[myClipNo] = videoData[i-1];
+                                myClipNo++;
+                                console.log(myVideoData);
+                                break;
+                            }
+                            else {
+                                break;
+                            }
+                        }
+                        else {
+                            console.log("the first time");
+                            myVideoData[myClipNo] = videoData[i-1];
+                            myClipNo++;
+                            console.log(myVideoData);
+                            break;
+                        }
+                    }
+                }
+            }
+            if ( current >= videoData[last].videoStart ) {
+                for (var j in myVideoData) {
+                    if (myVideoData[j].videoStart == videoData[last].videoStart) {
+                            hasProp = 1;
+                    }
+                }
+                if ( hasProp == 0) {
+                    console.log("the last one");
+                    myVideoData[myClipNo] = videoData[last];
+                    myClipNo++;
+                    console.log(myVideoData);
+                }
+            }
+        }
+
+        function showMyClips() {
+	        var html = [];
+            for (var i in myVideoData) {
+                    var l = '<p><a onclick=\"loadVideo(\'' + myVideoData[i].videoId + '\',' + myVideoData[i].videoStart + ',' + myVideoData[i].videoEnd + ')\" href=\"#\">Question: ' + myVideoData[i].videoQuestion + '</a></p><p><a onclick=\"loadAnswer(' + i + ')\" href=\"#\">Show Answer</a><div class=\"answer' + i + '\" style=\"display: none;\">' + myVideoData[i].videoAnswer + '</div></p><p><a onclick=\"loadLongAnswer(' + i + ')\" href=\"#\">Show Long Answer</a><div class=\"lanswer' + i + '\" style=\"display: none;\">' + myVideoData[i].videoLongAnswer + '</div></p>';
+                    html.push(l);
+                }
+            document.getElementById('myClips').innerHTML = html.join('');
+        }
+
+        function next() {
+            if (state != -1){
+                stopVideo();
+            }
+            console.log(state2);
+            if (state2 != -1){
+                ytplayer2.stopVideo();
+            }
+            var videoData = JSON.parse(localStorage["data"]);
+            if (videoData[clipNo+1]){
+                clipNo++;
+            }
+            var questions = [];
+            var answers = [];
+            /*
+            var q = '<h1><a onclick=\"initVideo(\'' + videoData[clipNo].videoId + '\',' + videoData[clipNo].videoStart + ',' + videoData[clipNo].videoEnd + ')\" href=\"#\">' + videoData[clipNo].videoQuestion + '</a></h1>'
+            */
+            var q = '<h1 class="text-center">' + videoData[clipNo].videoQuestion + '</h1>'
+
+            var a = '<div class="btn-group"><button type="button" class="btn btn-default" onclick=\"next()\">Known</button><button type="button" class="btn btn-default" onclick=\"next()\">Familiar</button><button type="button" class="btn btn-default" onclick=\"next()\">Unknown</button></div><p class="text-center"><a onclick=\"initVideo(' + clipNo + ')\" href=\"#\">Show Video Answer</a></p><p class="text-center"><a onclick=\"loadAnswer(' + clipNo + ')\" href=\"#\">Show Answer</a><div class=\"answer' + clipNo + '\" style=\"display: none;\">' + videoData[clipNo].videoAnswer + '</div></p><p class="text-center"><a onclick=\"loadLongAnswer(' + clipNo + ')\" href=\"#\">Show Long Answer</a><div class=\"lanswer' + clipNo + '\" style=\"display: none;\">' + videoData[clipNo].videoLongAnswer + '</div></p>';
+            questions.push(q);
+            answers.push(a);
+            document.getElementById('questions').innerHTML = questions.join('');
+            document.getElementById('answers').innerHTML = answers.join('');
+        }
+        function initVideo(clipNo) {
+            var videoData = JSON.parse(localStorage["data"]);
+            console.log(clipNo);
+            console.log(isOdd(clipNo));
+
+            if (videoData[clipNo+1]) {
+                if (isOdd(clipNo)) {
+                    // if the clipNo is an odd number, video plays on ytplayer2 
+                    // the video playing
+                    ytplayer2.unMute();
+                    $('.videoBox3').css('z-index', '999');
+                    loadVideo2(videoData[clipNo].videoId, videoData[clipNo].videoStart, videoData[clipNo].videoEnd);
+
+                    // the video playing on the background
+                    $('.videoBox2').css('z-index', '99');
+                    ytplayer.mute();
+                    loadVideo(videoData[clipNo+1].videoId, videoData[clipNo+1].videoStart, videoData[clipNo+1].videoEnd);
+                }
+                else {
+                    // if the clipNo is an even number, video plays on ytplayer1 
+                    $('.videoBox2').css('z-index', '999');
+                    ytplayer.unMute();
+                    loadVideo(videoData[clipNo].videoId, videoData[clipNo].videoStart, videoData[clipNo].videoEnd);
+
+                    $('.videoBox3').css('z-index', '99');
+                    ytplayer2.mute();
+                    loadVideo2(videoData[clipNo+1].videoId, videoData[clipNo+1].videoStart, videoData[clipNo+1].videoEnd);
+                }
+            }
+            else {
+                if (isOdd(clipNo)) {
+                    // if the clipNo is an odd number, video plays on ytplayer2 
+                    $('.videoBox3').css('z-index', '999');
+                    $('.videoBox2').css('z-index', '99');
+                    ytplayer2.unMute();
+                    loadVideo2(videoData[clipNo].videoId, videoData[clipNo].videoStart, videoData[clipNo].videoEnd);
+                }
+                else {
+                    // if the clipNo is an even number, video plays on ytplayer1 
+                    $('.videoBox2').css('z-index', '999');
+                    $('.videoBox3').css('z-index', '99');
+                    ytplayer.unMute();
+                    loadVideo(videoData[clipNo].videoId, videoData[clipNo].videoStart, videoData[clipNo].videoEnd);
+                }
+            }
+        }
+        function isOdd(num) {
+            return (num % 2) == 1;
+        }
+
+        function loadVideo(videoId, start, end) {
+            if(ytplayer) {
+                ytplayer.seekTo(start);
+            }
+        }
+
+        function loadVideo2(videoId, start, end) {
+            if(ytplayer2) {
+                ytplayer2.seekTo(start);
+            }
+        }
+        function pre() {
+            if (state == 1){
+                stopVideo();
+            }
+            var videoData = JSON.parse(localStorage["data"]);
+            if (videoData[clipNo-1]){
+                clipNo--;
+            }
+            var questions = [];
+            var answers = [];
+            var q = '<h1 class="text-center">' + videoData[clipNo].videoQuestion + '</h1>'
+            var a = '<h2><a onclick=\"next()\">Known</a> | <a onclick=\"next()\">Familiar</a> | <a onclick=\"next()\">Unknown</a></h2><p><a onclick=\"initVideo(' + clipNo + ')\" href=\"#\">Show Video Answer</a></p><p><a onclick=\"loadAnswer(' + clipNo + ')\" href=\"#\">Show Answer</a><div class=\"answer' + clipNo + '\" style=\"display: none;\">' + videoData[clipNo].videoAnswer + '</div></p><p><a onclick=\"loadLongAnswer(' + clipNo + ')\" href=\"#\">Show Long Answer</a><div class=\"lanswer' + clipNo + '\" style=\"display: none;\">' + videoData[clipNo].videoLongAnswer + '</div></p>';
+            questions.push(q);
+            answers.push(a);
+            document.getElementById('questions').innerHTML = questions.join('');
+            document.getElementById('answers').innerHTML = answers.join('');
+        }
+
+        window.onload = next();
+
+        function loadAnswer(clipNo) {
+            $('.answer' + clipNo).show('fast', function() {
+                });
+        }
+        function loadLongAnswer(clipNo) {
+            $('.lanswer' + clipNo).show('fast', function() {
+                });
+        }
+
+
+        function playFromStart() {
+            var videoData = JSON.parse(localStorage["data"]);
+            ytplayer.seekTo(0, 1);
+        }
+
+        function stopVideo() {
+            if (ytplayer) {
+                ytplayer.stopVideo();
+            }
+        }
+
+
+        function playVideo() {
+            if (ytplayer) {
+                ytplayer.playVideo();
+            }
+        }
+              
+        function pauseVideo() {
+            if (ytplayer) {
+                ytplayer.pauseVideo();
+            }
+        }
+              
+        function muteVideo() {
+            if(ytplayer) {
+                ytplayer.mute();
+            }
+        }
+              
+        function unMuteVideo() {
+            if(ytplayer) {
+                ytplayer.unMute();
+            }
+        }
+
+        function updateHTML(elmId, value) {
+            document.getElementById(elmId).innerHTML = value;
+        }
+              
+        function onPlayerError(errorCode) {
+            alert("An error occured of type:" + errorCode);
+        }
+              
+        function onPlayerStateChange(newState) {
+            state = newState;
+        }
+        function onPlayerStateChange2(newState) {
+            state2 = newState;
+        }
+
+
+        function updatePlayerInfo() {
+            var videoData = JSON.parse(localStorage["data"]);
+
+            if(ytplayer && ytplayer.getDuration()) {
+                if (videoData[clipNo+1]) {
+                    if (isOdd(clipNo)) {
+                        if (videoData[clipNo+1]["videoEnd"] < ytplayer.getCurrentTime()) {
+                            ytplayer.stopVideo();
+                        }
+                    }
+                    else {
+                        if (videoData[clipNo]["videoEnd"] < ytplayer.getCurrentTime()) {
+                            ytplayer.stopVideo();
+                        }
+                    }
+                }
+                else {
+                    if (!isOdd(clipNo)) {
+                        if (videoData[clipNo]["videoEnd"] < ytplayer.getCurrentTime()) {
+                            ytplayer.stopVideo();
+                        }
+                    }
+                }
+
+                updateHTML("videoDuration", ytplayer.getDuration());
+                updateHTML("videoCurrentTime", ytplayer.getCurrentTime());
+            }
+        }
+
+        function updatePlayerInfo2() {
+            var videoData = JSON.parse(localStorage["data"]);
+
+            if(ytplayer2 && ytplayer2.getDuration()) {
+                if (videoData[clipNo+1]) {
+                    if (isOdd(clipNo)) {
+                        if (videoData[clipNo]["videoEnd"] < ytplayer2.getCurrentTime()) {
+                            ytplayer2.stopVideo();
+                        }
+                    }
+                    else {
+                        if (videoData[clipNo+1]["videoEnd"] < ytplayer2.getCurrentTime()) {
+                            ytplayer2.stopVideo();
+                        }
+                    }
+                }
+                else {
+                    if (isOdd(clipNo)) {
+                        if (videoData[clipNo]["videoEnd"] < ytplayer2.getCurrentTime()) {
+                            ytplayer2.stopVideo();
+                        }
+                    }
+                }
+            }
+        }
+
+        // This function is automatically called by the player once it loads
+        function onYouTubePlayerReady(playerId) {
+            var videoData = JSON.parse(localStorage["data"]);
+            if (playerId == "player1") {
+                ytplayer = document.getElementById("ytPlayer");
+                // This causes the updatePlayerInfo function to be called every 250ms to
+                // get fresh data from the player
+                setInterval(updatePlayerInfo, 250);
+                updatePlayerInfo();
+                ytplayer.addEventListener("onStateChange", "onPlayerStateChange");
+                ytplayer.addEventListener("onError", "onPlayerError");
+
+                ytplayer.cueVideoById(videoData[0].videoId);
+            }
+            if (playerId == "player2") {
+                ytplayer2 = document.getElementById("ytPlayer2");
+                setInterval(updatePlayerInfo2, 250);
+                updatePlayerInfo2();
+                ytplayer.addEventListener("onStateChange", "onPlayerStateChange2");
+                ytplayer2.addEventListener("onError", "onPlayerError");
+
+                ytplayer2.cueVideoById(videoData[0].videoId);
+            }
+        }
+              
+        // The "main method" of this sample. Called when someone clicks "Run".
+        function loadPlayer() {
+            // Lets Flash from another domain call JavaScript
+            var params = {};
+            params.allowScriptAccess = "always";
+            params.wmode = "opaque";
+
+            // The element id of the Flash embed
+            var atts_1 = { id: "ytPlayer" };
+            // All of the magic handled by SWFObject (http://code.google.com/p/swfobject/)
+            swfobject.embedSWF("http://www.youtube.com/apiplayer?version=3&enablejsapi=1&playerapiid=player1", "videoDiv", "480", "295", "9", null, null, params, atts_1);
+
+            var atts_2 = { id: "ytPlayer2" };
+            swfobject.embedSWF("http://www.youtube.com/apiplayer?version=3&enablejsapi=1&playerapiid=player2", "videoDiv2", "480", "295", "9", null, null, params, atts_2);
+        }
+        function _run() {
+            loadPlayer();
+        }
+        google.setOnLoadCallback(_run);
+    </script>
+    </body>
+</html>

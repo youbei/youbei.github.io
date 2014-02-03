@@ -1,0 +1,138 @@
+<!doctype html>
+<html>
+<head>
+    <title>Video Editor Mode</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" type="text/css" rel="stylesheet">
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="video.css">
+</head>
+<body>
+    <header class="navbar navbar-inverse navbar-fixed-top bs-docs-nav" role="banner">
+        <div class="container">
+            <p class="navbar-brand">Video Editor Mode</p>
+        </div>
+    </header>
+    <div class="container">
+		<ul class="nav nav-tabs" id="tabs" data-tabs="tabs">
+		  <li class="active"><a href="#step1" data-toggle="tab">Step 1</a></li>
+		  <li><a href="#step2" data-toggle="tab">Step 2</a></li>
+		</ul>
+
+		<div class="tab-content">
+            <br/>
+			<div class="tab-pane active" id="step1">
+				<div class="row">
+					<div class="col-xs-12 col-sm-8 col-md-6">
+						<div class="videoBox">
+							<div id="videoDiv"></div>
+						</div>
+						<div id="progress_bar"></div>
+                        <br/>
+                        <p><span id="videoCurrentTime">--:--</span> / <span id="videoDuration">--:--</span> | Selected: <span id="selectedTime">--:--</span></p>
+						<p><a href="javascript:void(0);" onclick="playVideo();"><span class="glyphicon glyphicon-play"></span></a> <a href="javascript:void(0);" onclick="pauseVideo();"><span class="glyphicon glyphicon-pause"></span></a> <a href="javascript:void(0);" onclick="stopVideo();"><span class="glyphicon glyphicon-stop"></span></a> <a href="javascript:void(0);" onclick="muteVideo();"><span class="glyphicon glyphicon-volume-off"></span></a> <a href="javascript:void(0);" onclick="unMuteVideo();"><span class="glyphicon glyphicon-volume-up"></span></a></p>
+                        <!--div id="volumeSetting"></div-->
+                        <button type="button" class="btn btn-default" onclick="chopCurrentTime()";>Chop!</button>
+                        <br/>
+                        <br/>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="query">
+                            <span class="input-group-btn">
+                                <button onclick="search()" class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
+                            </span>
+                        </div>
+					</div>
+					<div class="col-xs-12 col-sm-4 col-md-6">
+						<div id="videos"></div>
+					</div>
+				</div> <!-- row -->
+			</div> <!-- step 1-->
+			<div class="tab-pane" id="step2">
+				<div class="row">
+					<div class="col-xs-12 col-sm-6 col-md-6">
+						<div class="videoBox"> 
+							<div id="videoDiv2"></div>
+						</div>
+						<div id="slider-range"></div>
+                        <br/>
+						<span id="time"></span>
+						<p>Current Time: <span id="videoCurrentTime2">--:--</span></p>
+						<p><a href="javascript:void(0);" onclick="playVideo2();">Play</a> | <a href="javascript:void(0);" onclick="pauseVideo2();">Pause</a> | <a href="javascript:void(0);" onclick="stopVideo2();">Stop</a> | <a href="javascript:void(0);" onclick="muteVideo2();">Mute</a> | <a href="javascript:void(0);" onclick="unMuteVideo2();">Unmute</a> | <a href="learning.html" target="_blank" onclick="update();">Next</a></p>
+					</div>
+					<div class="col-xs-12 col-sm-6 col-md-6">
+						<div class="list">
+							<ul id="chopedlist"></ul>
+						</div>
+					</div>
+				</div><!-- row -->
+			</div><!-- step 2 -->
+		</div><!-- tab-content -->
+    </div><!-- container -->
+
+        
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+    <script src="video.js" type="text/javascript"></script>
+	<script src="https://apis.google.com/js/client.js?onload=onClientLoad" type="text/javascript"></script>
+    <script src="http://www.google.com/jsapi" type="text/javascript"></script>
+    <script type="text/javascript">
+      google.load("swfobject", "2.2");
+    </script>    
+    
+    <script type="text/javascript">
+        // This function is automatically called by the player once it loads
+        function onYouTubePlayerReady(playerId) {
+            
+            if ((playerId == "player1") && $("#step1").is(":visible")) {
+                ytplayer = document.getElementById("ytPlayer");
+                $("#volumeSetting").slider({
+                    value: 50,
+                    min: 0,
+                    max: 100,
+                    change: function(event, ui){
+                        ytplayer.setVolume(ui.value);
+                    }
+                }); 
+                setInterval(updatePlayerInfo, 250);
+                updatePlayerInfo();
+
+                ytplayer.addEventListener("onStateChange", "onPlayerStateChange");
+                ytplayer.addEventListener("onError", "onPlayerError");
+            }
+
+            if ((playerId == "player2") && $("#step2").is(":visible")) {
+                ytplayer2 = document.getElementById("ytPlayer2");
+                ytplayer2.cueVideoById(id);
+                setInterval(updatePlayerInfo2, 250);
+                updatePlayerInfo2();
+                ytplayer2.addEventListener("onStateChange", "onPlayerStateChange2");
+                ytplayer2.addEventListener("onError", "onPlayerError2");
+            }
+        }
+              
+        // The "main method" of this sample. Called when someone clicks "Run".
+        function loadPlayer() {
+            // Lets Flash from another domain call JavaScript
+            var params = { allowScriptAccess: "always" };
+            // The element id of the Flash embed
+            var atts_1 = { id: "ytPlayer" };
+            // All of the magic handled by SWFObject (http://code.google.com/p/swfobject/)
+            swfobject.embedSWF("http://www.youtube.com/apiplayer?" + "version=3&enablejsapi=1&playerapiid=player1", "videoDiv", "480", "295", "9", null, null, params, atts_1);
+
+
+            var atts_2 = { id: "ytPlayer2" };
+            swfobject.embedSWF("http://www.youtube.com/apiplayer?" + "version=3&enablejsapi=1&playerapiid=player2", "videoDiv2", "480", "295", "9", null, null, params, atts_2);
+
+        }
+
+        function _run() {
+            loadPlayer();
+        }
+        google.setOnLoadCallback(_run);
+    </script>    
+  </body>
+</html>

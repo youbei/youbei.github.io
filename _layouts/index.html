@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1 ">
+    <meta charset="utf-8">
+    <title>{{ page.title }}</title>
+    {% if page.description %}<meta name="description" content="{{ page.description }}">{% endif %}
+    <meta name="author" content="{{ site.author.name }}">
+
+    <!-- Le styles -->
+	<link href='http://fonts.googleapis.com/css?family=Old+Standard+TT:400,400italic' rel='stylesheet' type='text/css'>
+
+	<link rel="stylesheet" type="text/css"
+	      media="only screen and (min-width: 1024px)"
+		  href="/assets/big.css" />
+
+	<link rel="stylesheet" type="text/css"
+	      media="only screen and (max-width: 1023px) and (min-width: 800px)"
+		  href="/assets/small.css" />
+
+	<link rel="stylesheet" type="text/css"
+	      media="only screen and (max-width: 799px)"
+		  href="/assets/mobile.css" />
+
+
+	<!-- le scripts -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+	<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+	<script src="/assets/js/slide5.js"></script>
+	<script src="/assets/js/jquery.flexslider.js"></script>
+	<script type="text/javascript" charset="utf-8">
+		$(window).load(function(){
+			$('.flexslider').flexslider({
+			animation: "slide",
+			directionNav: false
+			});
+		});
+	</script>
+	<script>
+	$(document).ready(function(){
+
+		// hide #back-top first
+		$("#back-top").hide();
+		
+		// fade in #back-top
+		$(function () {
+			$(window).scroll(function () {
+				if ($(this).scrollTop() > 100) {
+					$('#back-top').fadeIn();
+				} else {
+					$('#back-top').fadeOut();
+				}
+			});
+
+			// scroll body to 0px on click
+			$('#back-top a').click(function () {
+				$('body,html').animate({
+					scrollTop: 0
+				}, 400);
+				return false;
+			});
+		});
+
+	});
+	</script>
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="{{ ASSET_PATH }}/assets/image/favicon.ico">
+	</head>
+
+	<body>
+		<div class="container">
+			<aside class="header">
+				<div class="flexslider">
+					<ul class="slides">
+						<li class="test" style="background-image: url('/assets/image/cover_02.JPG') ">aaa</li>
+						<li class="test" style="background-image: url('/assets/image/cover_01.JPG') ">aaa</li>
+					</ul>
+				</div>
+				<div class="logo">
+					<a href="{{ HOME_PATH }}">Y</a>	
+				</div>
+				<div class="underconstruction">
+					<p><span>&clubs;</span><br />Under construction.</p>
+				</div>
+			</aside>
+			<section class="contentbox">
+				<div class="nav">
+					<ul>
+						<a href="{{ HOME_PATH }}"><li>BLOG</li></a>
+						<a href="https://github.com/youbei?tab=repositories"><li>WORK</li></a>
+						<a href="#"><li>ABOUT</li></a>
+					</ul>
+				</div>
+				<div class="bloglist">
+					<ul>
+						{% for post in site.posts %}
+						<li>
+							<div class="title">
+								<a href="{{ BASE_PATH }}{{ post.url }}">{{ post.title }}</a>
+							</div>
+							<div class="dash"></div>
+							<div class="date">
+								{{ post.date | date: "%d %B %Y"}}
+							</div>
+						<div class="excerpts">
+							{{ post.content | replace:"more start -->","" | replace:"<!-- more end","" | replace:"</p>","" | replace:"</h3>"}}
+							<a href="{{ BASE_PATH }}{{ post.url }}">MORE</a>
+						</div>
+						</li>
+						{% endfor %}
+					</ul>
+				</div>
+				<div class="footer">
+					<p>Designed by {{ site.author.name }}</p>
+					<div class="dash"></div>
+					<p>Powered by <a href="https://github.com"  target="_blank">GitHub</a></p>
+				</div>
+				<div id="back-top">
+					<a href="#top">&#8593</a>
+				</div>
+			</section>
+		</div>
+	</body>
+</html>
