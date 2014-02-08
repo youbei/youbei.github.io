@@ -88,7 +88,13 @@ function loadVideo2(videoId, start, end, liNo) {
             //'endSeconds': end
         });
         */
-        ytplayer2.seekTo(start, 0);
+        ytplayer2.loadVideoById({
+            'videoId': videoId,
+            'startSeconds': start 
+        });
+        /*
+        ytplayer2.seekTo(start, 1);
+        */
         id = videoId;
 
         var url = "http://gdata.youtube.com/feeds/api/videos/" + videoId + "?v=2&alt=jsonc&prettyprint=true";
@@ -96,7 +102,6 @@ function loadVideo2(videoId, start, end, liNo) {
         var maxTime; 
         $.get(url, function(data) { 
             var duration = data["data"]["duration"];
-            console.log(duration);
 
             if (start <= 30) {
                 minTime = 0; 
@@ -118,7 +123,7 @@ function loadVideo2(videoId, start, end, liNo) {
                 step: 1,
                 slide: changeTime,
                 change: function(event, ui){
-                    playSelected(id); 
+                    playSelected(videoId); 
                     changeTime(event, ui);
                     //isOriginal = 0;
                 }
@@ -204,7 +209,10 @@ function updatePlayerInfo2() {
             if (videoData[clipPlaying]["videoEnd"] < ytplayer2.getCurrentTime()) {
                 stopVideo2();
             }
+            updateHTML("videoDuration2", ytplayer2.getDuration());
+            updateHTML("clipDuration", videoData[clipPlaying]["videoEnd"]);
             updateHTML("videoCurrentTime2", ytplayer2.getCurrentTime());
+            updateHTML("videoCurrentTime3", ytplayer2.getCurrentTime());
         }
     }
 }
@@ -240,6 +248,28 @@ function stopVideo() {
     }
 }
 
+function playFromStart2() {
+    if (ytplayer2) {
+        videoId = id;
+        var url = "http://gdata.youtube.com/feeds/api/videos/" + videoId + "?v=2&alt=jsonc&prettyprint=true";
+        $.get(url, function(data) { 
+            var duration = data["data"]["duration"];
+
+            $("#progress_bar_2").slider({
+                value: 0,
+                min: 0,
+                max: duration,
+                change: function(event, ui){
+                    ytplayer2.seekTo(ui.value, 1);
+                }
+            }); 
+            ytplayer2.loadVideoById({
+                'videoId': videoId,
+                'startSeconds': 0 
+            });
+        });
+    }
+}
 
 function playVideo2() {
     if (ytplayer2 && ytplayer2.getPlayerState()!==-1) {
@@ -273,21 +303,21 @@ function stopVideo2() {
 
 
 function chopCurrentTime() {
-      if(ytplayer && id) {
+      if(ytplayer2 && id) {
             var start;
             var end;
-            if (ytplayer.getCurrentTime() <= 5) {
+            if (ytplayer2.getCurrentTime() <= 5) {
                 start = 0;
             }
             else {
-                start = ytplayer.getCurrentTime() - 5;
+                start = ytplayer2.getCurrentTime() - 5;
             }
 
-            if (ytplayer.getDuration() - ytplayer.getCurrentTime() <= 5) {
-                end = ytplayer.getDuration();
+            if (ytplayer2.getDuration() - ytplayer2.getCurrentTime() <= 5) {
+                end = ytplayer2.getDuration();
             }
             else {
-                end = ytplayer.getCurrentTime() + 5;
+                end = ytplayer2.getCurrentTime() + 5;
             }
             
 
