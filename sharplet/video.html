@@ -30,7 +30,8 @@
 						</div>
 						<div id="progress_bar"></div>
                         <br/>
-                        <p><span id="videoCurrentTime">--:--</span> / <span id="videoDuration">--:--</span> | Selected: <span id="selectedTime">--:--</span></p>
+                        <p><span id="videoCurrentTime">--:--</span> / <span id="videoDuration">--:--</span></p> 
+                        <p>Selected: <span id="selectedId">None</span></p>
 						<p><a href="javascript:void(0);" onclick="playVideo();">Play</a> | <a href="javascript:void(0);" onclick="pauseVideo();">Pause</a> | <a href="javascript:void(0);" onclick="stopVideo();">Stop</a> | <a href="javascript:void(0);" onclick="muteVideo();">Mute</a> | <a href="javascript:void(0);" onclick="unMuteVideo();">Unmute</a></p>
                         <!--div id="volumeSetting"></div-->
                         <div class="input-group">
@@ -39,6 +40,7 @@
                                 <button onclick="search()" class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
                             </span>
                         </div>
+                        <hr />
 					</div>
 					<div class="col-xs-12 col-sm-4 col-md-6">
 						<div id="videos"></div>
@@ -274,7 +276,7 @@
             if(typeof ytplayer.getDuration !== 'undefined')
             {
                 if(ytplayer && ytplayer.getDuration()){
-                    updateHTML("selectedTime", $("#progress_bar").slider("value"));
+                    updateHTML("selectedId", id);
                     updateHTML("videoDuration", ytplayer.getDuration());
                     updateHTML("videoCurrentTime", ytplayer.getCurrentTime());
                     updateHTML("volume", ytplayer.getVolume());
