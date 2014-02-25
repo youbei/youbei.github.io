@@ -50,56 +50,6 @@
         clipPlaying = -1;
         myClipNo = 0;
         myVideoData = new Object();
-        function reviewLater() {
-            var videoData = JSON.parse(localStorage["data"]);
-            var last = Object.keys(videoData).sort().reverse()[0];
-            var current = ytplayer.getCurrentTime();
-            var hasProp = 0;
-            // so lame...
-            if ( (current > videoData[0].videoStart) && ( current < videoData[last].videoStart )) {
-                for (var i in videoData) {
-                    if (current - videoData[i].videoStart < 0) {
-                        if (myVideoData[0] != null) {
-                            for (var j in myVideoData) {
-                                if (myVideoData[j].videoStart == videoData[i-1].videoStart) {
-                                    hasProp = 1;
-                                }
-                            }
-                            if ( hasProp == 0) {
-                                console.log("the second time");
-                                myVideoData[myClipNo] = videoData[i-1];
-                                myClipNo++;
-                                console.log(myVideoData);
-                                break;
-                            }
-                            else {
-                                break;
-                            }
-                        }
-                        else {
-                            console.log("the first time");
-                            myVideoData[myClipNo] = videoData[i-1];
-                            myClipNo++;
-                            console.log(myVideoData);
-                            break;
-                        }
-                    }
-                }
-            }
-            if ( current >= videoData[last].videoStart ) {
-                for (var j in myVideoData) {
-                    if (myVideoData[j].videoStart == videoData[last].videoStart) {
-                            hasProp = 1;
-                    }
-                }
-                if ( hasProp == 0) {
-                    console.log("the last one");
-                    myVideoData[myClipNo] = videoData[last];
-                    myClipNo++;
-                    console.log(myVideoData);
-                }
-            }
-        }
 
         function showMyClips() {
 	        var html = [];
@@ -273,7 +223,7 @@
             // Lets Flash from another domain call JavaScript
             var params = {};
             params.allowScriptAccess = "always";
-            params.wmode = "opaque";
+            //params.wmode = "opaque";
 
             // The element id of the Flash embed
             var atts_1 = { id: "ytPlayer" };
