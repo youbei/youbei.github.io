@@ -1,0 +1,4 @@
+ALTER TABLE deck ADD COLUMN course_type INT NOT NULL DEFAULT 0;
+ALTER TABLE card ADD COLUMN video_id varchar(16);
+ALTER TABLE card ADD COLUMN video_start INT;
+ALTER TABLE card ADD COLUMN video_end INT;
